@@ -43,21 +43,56 @@ def preprocessing_for_bodyPreformance(dataframe: pd.DataFrame) -> tuple:
 
 
 def music_genre_preprocessing(dataframe: pd.DataFrame) -> tuple:
-    # todo
-    return ()
-
-
-def marketing_preprocess_function(dataframe: pd.DataFrame) -> tuple:
     """
-    :param dataframe:  marketing_campaign dataframe
-    :return: touple of X and Y after preprocessing
+
+    :param dataframe: music_genre dataframe
+    :return: tuple of X and Y after preprocessing
+    """
+    dataframe = dataframe.copy()
+
+    # Drop useless columns
+    dataframe.drop(columns=['artist_name', 'track_name', 'obtained_date', 'tempo', 'instance_id'], inplace=True)
+    dataframe.dropna(inplace=True)
+    print (len(dataframe))
+
+    # split data to X and y
+    target_column_name = 'music_genre'
+
+    df_target = dataframe[target_column_name]
+    dataframe.drop(columns=target_column_name, inplace=True)
+
+    # change y data to categories instead of strings
+    df_target = df_target.astype("category")
+    df_target = df_target.cat.codes
+
+
+
+    # split columns to bins:
+    dataframe[dataframe['duration_ms'] == -1] = dataframe[dataframe['duration_ms'] != -1]['duration_ms'].mean()
+    dataframe['duration_ms'] = pd.qcut(dataframe['duration_ms'], q=4, labels=[0, 1, 2, 3])
+
+    # hotspot for mode
+    mode = pd.get_dummies(dataframe['mode'])
+    dataframe = dataframe.join(mode, lsuffix="mode_")
+    dataframe.drop(columns='mode', inplace=True)
+
+    # hotspot for key
+    key = pd.get_dummies(dataframe['key'])
+    dataframe = dataframe.join(key, lsuffix="key_")
+    dataframe.drop(columns='key', inplace=True)
+
+    return dataframe, df_target
+
+
+def bank_preprocess_function(dataframe: pd.DataFrame) -> tuple:
+    """
+    :param dataframe:  bank dataframe
+    :return: tuple of X and Y after preprocessing
     """
     dataframe = dataframe.copy()
     # split data to X and y
-    target_column_name = 'Marital_Status'
+    target_column_name = 'marital'
 
-    # Change all "Alone" Status to Single
-    dataframe[target_column_name] = dataframe[target_column_name].apply(lambda x: "Single" if x == "Alone" else x)
     df_target = dataframe[target_column_name]
     dataframe.drop(columns=target_column_name, inplace=True)
 
@@ -66,21 +101,49 @@ def marketing_preprocess_function(dataframe: pd.DataFrame) -> tuple:
     df_target = df_target.cat.codes
 
     # split data to bins
-    dataframe['Income'].fillna(dataframe['Income'].mean(), inplace=True)
-    dataframe['Income'] = pd.to_numeric(dataframe['Income'], errors='coerce')
-    dataframe['Income'] = pd.qcut(dataframe['Income'], q=4, labels=[0, 1, 2, 3])
-    dataframe['Year_Birth'] = pd.qcut(dataframe['Year_Birth'], q=4, labels=[0, 1, 2, 3])
+    dataframe['balance'].fillna(dataframe['balance'].mean(), inplace=True)
+    dataframe['balance'] = pd.to_numeric(dataframe['balance'], errors='coerce')
+    dataframe['balance'] = pd.qcut(dataframe['balance'], q=4, labels=[0, 1, 2, 3])
+
+    dataframe['age'].fillna(dataframe['age'].mean(), inplace=True)
+    dataframe['age'] = pd.to_numeric(dataframe['age'], errors='coerce')
+    dataframe['age'] = pd.qcut(dataframe['age'], q=4, labels=[0, 1, 2, 3])
 
     # hotspot for education column
-    education = pd.get_dummies(dataframe['Education'])
-    dataframe = dataframe.join(education)
-    dataframe.drop(columns='Education', inplace=True)
+    education = pd.get_dummies(dataframe['education'])
+    dataframe = dataframe.join(education, lsuffix="edu_")
+    dataframe.drop(columns='education', inplace=True)
 
-    # Drop Id coloumn
-    dataframe.drop(columns='ID', inplace=True)
+    # hotspot for jobs
+    jobs = pd.get_dummies(dataframe['job'])
+    dataframe = dataframe.join(jobs, lsuffix="job_")
+    dataframe.drop(columns='job', inplace=True)
 
-    # Drop Dt_Customer, data format that didnt help for classification
-    dataframe.drop(columns='Dt_Customer', inplace=True)
+    # hotspot for default
+    default = pd.get_dummies(dataframe['default'])
+    dataframe = dataframe.join(default, lsuffix="default_")
+    dataframe.drop(columns='default', inplace=True)
+
+    # hotspot for loan
+    loan = pd.get_dummies(dataframe['loan'])
+    dataframe = dataframe.join(loan, lsuffix="loan_")
+    dataframe.drop(columns='loan', inplace=True)
+
+    # hotspot for housing
+    housing = pd.get_dummies(dataframe['housing'])
+    dataframe = dataframe.join(housing, lsuffix="house_")
+    dataframe.drop(columns='housing', inplace=True)
+
+    # hotspot for deposit
+    deposit = pd.get_dummies(dataframe['deposit'])
+    dataframe = dataframe.join(deposit, lsuffix="deposit_")
+    dataframe.drop(columns='deposit', inplace=True)
+
+    # Drop contact coloumn - nonsanse values
+    dataframe.drop(columns='contact', inplace=True)
+
+    # Drop day and month, data and poutcome that didnt help for classification
+    dataframe.drop(columns=['day', 'month', 'poutcome'], inplace=True)
 
     return dataframe, df_target
 
@@ -172,30 +235,38 @@ def clustering_selection_test(dataframe: pd.DataFrame, preprocess_function) -> N
 
 
 if __name__ == '__main__':
-    iris = load_iris()
-    decision_dependent_direct_knn_test(iris, iris_preprocessing)
+    # bank_df = pd.read_csv(r'datasets/music_genre.csv')
+    # print (bank_df['job'].unique())
+    # music_genre_preprocessing(bank_df)
+
+    # iris = load_iris()
+    # decision_dependent_direct_knn_test(iris, iris_preprocessing)
+    # decision_dependent_distance_based_knn_test(iris, iris_preprocessing)
+    # decision_independent_direct_knn_test(iris, iris_preprocessing)
+    # decision_independent_distance_based_knn_test(iris, iris_preprocessing)
+
     # print("music genre")
-    # decision_dependent_direct_knn_test(pd.read_csv('data/tiktok.csv'), music_genre_preprocessing)
+    # decision_dependent_direct_knn_test(pd.read_csv('datasets/music_genre.csv'), music_genre_preprocessing)
     # print("-" * 100)
-    # decision_dependent_distance_based_knn_test(pd.read_csv('data/tiktok.csv'), music_genre_preprocessing)
+    # decision_dependent_distance_based_knn_test(pd.read_csv('datasets/music_genre.csv'), music_genre_preprocessing)
     # print("-" * 100)
-    # decision_independent_direct_knn_test(pd.read_csv('data/tiktok.csv'), music_genre_preprocessing)
+    # decision_independent_direct_knn_test(pd.read_csv('datasets/music_genre.csv'), music_genre_preprocessing)
     # print("-" * 100)
-    # decision_independent_distance_based_knn_test(pd.read_csv('data/tiktok.csv'), music_genre_preprocessing)
+    # decision_independent_distance_based_knn_test(pd.read_csv('datasets/music_genre.csv'), music_genre_preprocessing)
     # print("-" * 100)
     # clustering_selection_test(pd.read_csv('data/tiktok.csv'), music_genre_preprocessing)
     # print("\n\n")
     # print("-" * 100)
-    # print("marketing_campaign")
-    # decision_dependent_direct_knn_test(pd.read_csv(), marketing_preprocess_function)
-    # print("-" * 100)
-    # decision_dependent_distance_based_knn_test(pd.read_csv(), marketing_preprocess_function)
-    # print("-" * 100)
-    # decision_independent_direct_knn_test(pd.read_csv(), marketing_preprocess_function)
-    # print("-" * 100)
-    # decision_independent_distance_based_knn_test(pd.read_csv(), marketing_preprocess_function)
-    # print("-" * 100)
-    # clustering_selection_test(pd.read_csv(), marketing_preprocess_function)
+    print("bank")
+    decision_dependent_direct_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function)
+    print("-" * 100)
+    decision_dependent_distance_based_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function)
+    print("-" * 100)
+    decision_independent_direct_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function)
+    print("-" * 100)
+    decision_independent_distance_based_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function)
+    print("-" * 100)
+    # clustering_selection_test(pd.read_csv(), bank_preprocess_function)
     # print("\n\n")
     # print("bodyPerformance")
     # decision_dependent_direct_knn_test(pd.read_csv(), preprocessing_for_bodyPreformance)
