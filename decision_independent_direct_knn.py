@@ -12,7 +12,7 @@ class DecisionIndependentDirectKNN(DecisionDependentDirectKNN):
         model_pred_score = {}
         for n in nn[0]:
             for m in self.models:
-                if m.predict([self.train_x.iloc[n]]) == self.train_y.iloc[n].values[0]:
+                if self.get_predict_from_ds(m, n) == self.train_y.iloc[n].values[0]:
                     model_pred_score[m] = model_pred_score[m] + 1 if m in model_pred_score else 1
         if len(model_pred_score) == 0:
             best_model = random.sample(self.models, 1)[0]
