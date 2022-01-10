@@ -7,7 +7,6 @@ from models_abstract_class import ModelsAbstractClass
 class DecisionDependentDirectKNN(ModelsAbstractClass):
 
     def __init__(self):
-        # todo choose 2 more models as we wish
         super(DecisionDependentDirectKNN, self).__init__()
         self.knn = KNeighborsClassifier()
         self.already_predicted = {}

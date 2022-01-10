@@ -5,7 +5,7 @@ from decision_dependent_distance_based_knn import DecisionDependentDistanceBased
 from decision_independent_direct_knn import DecisionIndependentDirectKNN
 from decision_independent_distance_based_knn import DecisionIndependentDistanceBasedKNN
 from sklearn.metrics import accuracy_score, precision_score, f1_score
-
+from matplotlib import pyplot as plt
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
@@ -50,7 +50,7 @@ def music_genre_preprocessing(dataframe: pd.DataFrame) -> tuple:
     :return: tuple of X and Y after preprocessing
     """
     dataframe = dataframe.copy()
-
+    dataframe = dataframe.iloc[:20000]
     # Drop useless columns
     dataframe.drop(columns=['artist_name', 'track_name', 'obtained_date', 'tempo', 'instance_id'], inplace=True)
     dataframe.dropna(inplace=True)
@@ -256,51 +256,39 @@ def clustering_selection_test(dataframe: pd.DataFrame, preprocess_function, pre_
 
 
 if __name__ == '__main__':
-    bank_df = pd.read_csv(r'datasets/music_genre.csv')
-    print (bank_df['job'].unique())
-    music_genre_preprocessing(bank_df)
-
-    # iris = load_iris()
-    # decision_dependent_direct_knn_test(iris, iris_preprocessing)
-    # decision_dependent_distance_based_knn_test(iris, iris_preprocessing)
-    # decision_independent_direct_knn_test(iris, iris_preprocessing)
-    # decision_independent_distance_based_knn_test(iris, iris_preprocessing)
-
-    # print("music genre")
-    # t = time.time()
-    # pre_trained_list = decision_dependent_direct_knn_test(pd.read_csv('datasets/music_genre.csv').sample(n= 50), music_genre_preprocessing)
-    # print("-" * 100)
-    # decision_dependent_distance_based_knn_test(pd.read_csv('datasets/music_genre.csv'), music_genre_preprocessing, pre_trained_list)
-    # print("-" * 100)
-    # decision_independent_direct_knn_test(pd.read_csv('datasets/music_genre.csv'), music_genre_preprocessing, pre_trained_list)
-    # print("-" * 100)
-    # decision_independent_distance_based_knn_test(pd.read_csv('datasets/music_genre.csv'), music_genre_preprocessing, pre_trained_list)
-    # print("-" * 100)
-    # clustering_selection_test(pd.read_csv('datasets/music_genre.csv'), music_genre_preprocessing, pre_trained_list)
-    # print(time.time() - t)
-    # print("\n\n")
-    # print("-" * 100)
-    # print("bank")
-    # pre_trained_list = decision_dependent_direct_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function)
-    # print("-" * 100)
-    # decision_dependent_distance_based_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function,
-    #                                            pre_trained_list)
-    # print("-" * 100)
-    # decision_independent_direct_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function, pre_trained_list)
-    # print("-" * 100)
-    # decision_independent_distance_based_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function,
-    #                                              pre_trained_list)
-    # print("-" * 100)
-    # clustering_selection_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function, pre_trained_list)
-    # print("\n\n")
-    # print("bodyPerformance")
-    # pre_trained_list = decision_dependent_direct_knn_test(pd.read_csv(r'datasets/bodyPerformance.csv'), preprocessing_for_bodyPreformance)
-    # print("-" * 100)
-    # decision_dependent_distance_based_knn_test(pd.read_csv(r'datasets/bodyPerformance.csv'), preprocessing_for_bodyPreformance, pre_trained_list)
-    # print("-" * 100)
-    # decision_independent_direct_knn_test(pd.read_csv(r'datasets/bodyPerformance.csv'), preprocessing_for_bodyPreformance, pre_trained_list)
-    # print("-" * 100)
-    # decision_independent_distance_based_knn_test(pd.read_csv(r'datasets/bodyPerformance.csv'), preprocessing_for_bodyPreformance, pre_trained_list)
-    # print("-" * 100)
-    # clustering_selection_test(pd.read_csv(r'datasets/bodyPerformance.csv'), preprocessing_for_bodyPreformance, pre_trained_list)
-    # print("\n\n")
+    print("music genre")
+    pre_trained_list = decision_dependent_direct_knn_test(pd.read_csv('datasets/music_genre.csv'), music_genre_preprocessing)
+    print("-" * 100)
+    decision_dependent_distance_based_knn_test(pd.read_csv('datasets/music_genre.csv'), music_genre_preprocessing, pre_trained_list)
+    print("-" * 100)
+    decision_independent_direct_knn_test(pd.read_csv('datasets/music_genre.csv'), music_genre_preprocessing, pre_trained_list)
+    print("-" * 100)
+    decision_independent_distance_based_knn_test(pd.read_csv('datasets/music_genre.csv'), music_genre_preprocessing, pre_trained_list)
+    print("-" * 100)
+    clustering_selection_test(pd.read_csv('datasets/music_genre.csv'), music_genre_preprocessing, pre_trained_list)
+    print("\n\n")
+    print("-" * 100)
+    print("bank")
+    pre_trained_list = decision_dependent_direct_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function)
+    print("-" * 100)
+    decision_dependent_distance_based_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function,
+                                               pre_trained_list)
+    print("-" * 100)
+    decision_independent_direct_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function, pre_trained_list)
+    print("-" * 100)
+    decision_independent_distance_based_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function,
+                                                 pre_trained_list)
+    print("-" * 100)
+    clustering_selection_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function, pre_trained_list)
+    print("\n\n")
+    print("bodyPerformance")
+    pre_trained_list = decision_dependent_direct_knn_test(pd.read_csv(r'datasets/bodyPerformance.csv'), preprocessing_for_bodyPreformance)
+    print("-" * 100)
+    decision_dependent_distance_based_knn_test(pd.read_csv(r'datasets/bodyPerformance.csv'), preprocessing_for_bodyPreformance, pre_trained_list)
+    print("-" * 100)
+    decision_independent_direct_knn_test(pd.read_csv(r'datasets/bodyPerformance.csv'), preprocessing_for_bodyPreformance, pre_trained_list)
+    print("-" * 100)
+    decision_independent_distance_based_knn_test(pd.read_csv(r'datasets/bodyPerformance.csv'), preprocessing_for_bodyPreformance, pre_trained_list)
+    print("-" * 100)
+    clustering_selection_test(pd.read_csv(r'datasets/bodyPerformance.csv'), preprocessing_for_bodyPreformance, pre_trained_list)
+    print("\n\n")
