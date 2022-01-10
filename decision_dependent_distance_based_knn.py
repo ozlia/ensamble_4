@@ -1,6 +1,7 @@
 from decision_dependent_direct_knn import DecisionDependentDirectKNN
 import random
 
+
 class DecisionDependentDistanceBasedKNN(DecisionDependentDirectKNN):
     def predict_one(self, sample):
         nn = self.knn.kneighbors([sample], 5, return_distance=False)
@@ -15,5 +16,6 @@ class DecisionDependentDistanceBasedKNN(DecisionDependentDirectKNN):
         if len(model_pred_score) == 0:
             best_model = random.sample(self.models, 1)[0]
         else:
-            best_model = [(k, v) for k, v in sorted(model_pred_score.items(), key=lambda item: item[1], reverse=True)][0][0]
+            best_model = \
+            [(k, v) for k, v in sorted(model_pred_score.items(), key=lambda item: item[1], reverse=True)][0][0]
         return best_model.predict([sample])[0]

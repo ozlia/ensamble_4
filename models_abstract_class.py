@@ -1,17 +1,19 @@
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
 from lightgbm import LGBMClassifier
+from sklearn.naive_bayes import GaussianNB
 
 
 class ModelsAbstractClass:
 
     def __init__(self):
-        # todo choose 2 more models as we wish
+        adaboost = AdaBoostClassifier()
+        gausianNB = GaussianNB()
         random_forest = RandomForestClassifier(random_state=2)
         lightgbm = LGBMClassifier(random_state=2)
         sdt = DecisionTreeClassifier(random_state=2)
-        self.models = [random_forest, lightgbm, sdt]
+        self.models = [random_forest, lightgbm, sdt, adaboost, gausianNB]
         self.train_x = []
         self.train_y = []
 

@@ -1,8 +1,5 @@
 import random
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier
-from lightgbm import LGBMClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from models_abstract_class import ModelsAbstractClass
 

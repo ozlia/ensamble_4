@@ -54,7 +54,7 @@ def music_genre_preprocessing(dataframe: pd.DataFrame) -> tuple:
     # Drop useless columns
     dataframe.drop(columns=['artist_name', 'track_name', 'obtained_date', 'tempo', 'instance_id'], inplace=True)
     dataframe.dropna(inplace=True)
-    print (len(dataframe))
+    print(len(dataframe))
 
     # split data to X and y
     target_column_name = 'music_genre'
@@ -65,8 +65,6 @@ def music_genre_preprocessing(dataframe: pd.DataFrame) -> tuple:
     # change y data to categories instead of strings
     df_target = df_target.astype("category")
     df_target = df_target.cat.codes
-
-
 
     # split columns to bins:
     dataframe[dataframe['duration_ms'] == -1] = dataframe[dataframe['duration_ms'] != -1]['duration_ms'].mean()
@@ -145,7 +143,7 @@ def bank_preprocess_function(dataframe: pd.DataFrame) -> tuple:
 
     # Drop day and month, data and poutcome that didnt help for classification
     dataframe.drop(columns=['day', 'month', 'poutcome'], inplace=True)
-    print (len(dataframe))
+    print(len(dataframe))
     return dataframe, df_target
 
 
@@ -171,6 +169,7 @@ def decision_dependent_direct_knn_test(dataframe: pd.DataFrame, preprocess_funct
     :param preprocess_function: preprocess function for given dataframe
     :return: trainded models list
     """
+    print("decision_dependent_direct_knn_test")
     X, y = preprocess_function(dataframe)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
 
@@ -180,13 +179,15 @@ def decision_dependent_direct_knn_test(dataframe: pd.DataFrame, preprocess_funct
     return dddk.export_trained_models_as_list()
 
 
-def decision_dependent_distance_based_knn_test(dataframe: pd.DataFrame, preprocess_function, pre_traind_models: list = None) -> None:
+def decision_dependent_distance_based_knn_test(dataframe: pd.DataFrame, preprocess_function,
+                                               pre_traind_models: list = None) -> None:
     """
     This function use `decision_dependent_distance_based_knn` model for evaluate performance of multi classification task
     :param dataframe: dataframe
     :param preprocess_function: preprocess function for given dataframe
     :return:
     """
+    print("decision_dependent_distance_based_knn_test")
     X, y = preprocess_function(dataframe)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
     dddk = DecisionDependentDistanceBasedKNN()
@@ -197,13 +198,15 @@ def decision_dependent_distance_based_knn_test(dataframe: pd.DataFrame, preproce
     print_metrics(model=dddk, X_test=X_test, y_test=y_test)
 
 
-def decision_independent_direct_knn_test(dataframe: pd.DataFrame, preprocess_function, pre_traind_models: list = None) -> None:
+def decision_independent_direct_knn_test(dataframe: pd.DataFrame, preprocess_function,
+                                         pre_traind_models: list = None) -> None:
     """
     This function use `decision_independent_direct_knn` model for evaluate performance of multi classification task
     :param dataframe: dataframe
     :param preprocess_function: preprocess function for given dataframe
     :return:
     """
+    print("decision_independent_direct_knn_test")
     X, y = preprocess_function(dataframe)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
 
@@ -215,13 +218,15 @@ def decision_independent_direct_knn_test(dataframe: pd.DataFrame, preprocess_fun
     print_metrics(model=didk, X_test=X_test, y_test=y_test)
 
 
-def decision_independent_distance_based_knn_test(dataframe: pd.DataFrame, preprocess_function, pre_traind_models: list = None) -> None:
+def decision_independent_distance_based_knn_test(dataframe: pd.DataFrame, preprocess_function,
+                                                 pre_traind_models: list = None) -> None:
     """
     This function use `decision_independent_distance_based_knn` model for evaluate performance of multi classification task
     :param dataframe: dataframe
     :param preprocess_function: preprocess function for given dataframe
     :return:
     """
+    print("decision_independent_distance_based_knn_test")
     X, y = preprocess_function(dataframe)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
     didbk = DecisionIndependentDistanceBasedKNN()
@@ -239,6 +244,7 @@ def clustering_selection_test(dataframe: pd.DataFrame, preprocess_function, pre_
     :param preprocess_function: preprocess function for given dataframe
     :return:
     """
+    print("clustering_selection_test")
     X, y = preprocess_function(dataframe)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
     didbk = ClusteringSelection()
@@ -250,9 +256,9 @@ def clustering_selection_test(dataframe: pd.DataFrame, preprocess_function, pre_
 
 
 if __name__ == '__main__':
-    # bank_df = pd.read_csv(r'datasets/music_genre.csv')
-    # print (bank_df['job'].unique())
-    # music_genre_preprocessing(bank_df)
+    bank_df = pd.read_csv(r'datasets/music_genre.csv')
+    print (bank_df['job'].unique())
+    music_genre_preprocessing(bank_df)
 
     # iris = load_iris()
     # decision_dependent_direct_knn_test(iris, iris_preprocessing)
@@ -274,17 +280,19 @@ if __name__ == '__main__':
     # print(time.time() - t)
     # print("\n\n")
     # print("-" * 100)
-    print("bank")
-    pre_trained_list = decision_dependent_direct_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function)
-    print("-" * 100)
-    decision_dependent_distance_based_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function, pre_trained_list)
-    print("-" * 100)
-    decision_independent_direct_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function, pre_trained_list)
-    print("-" * 100)
-    decision_independent_distance_based_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function, pre_trained_list)
-    print("-" * 100)
-    clustering_selection_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function, pre_trained_list)
-    print("\n\n")
+    # print("bank")
+    # pre_trained_list = decision_dependent_direct_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function)
+    # print("-" * 100)
+    # decision_dependent_distance_based_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function,
+    #                                            pre_trained_list)
+    # print("-" * 100)
+    # decision_independent_direct_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function, pre_trained_list)
+    # print("-" * 100)
+    # decision_independent_distance_based_knn_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function,
+    #                                              pre_trained_list)
+    # print("-" * 100)
+    # clustering_selection_test(pd.read_csv(r'datasets/bank.csv'), bank_preprocess_function, pre_trained_list)
+    # print("\n\n")
     # print("bodyPerformance")
     # pre_trained_list = decision_dependent_direct_knn_test(pd.read_csv(r'datasets/bodyPerformance.csv'), preprocessing_for_bodyPreformance)
     # print("-" * 100)
